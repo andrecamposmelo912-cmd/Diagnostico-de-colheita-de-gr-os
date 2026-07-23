@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Diagnóstico de Colheita — Nempa Tech</title>
+<meta name="theme-color" content="#1F3864">
+<meta name="description" content="App de coleta e relatório de eficiência, disponibilidade e consumo na colheita mecanizada de milho">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  :root {
+    --surface-2: #ffffff; --surface-1: #f5f6f8; --surface-0: #eef0f3;
+    --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #898781;
+    --text-accent: #1F3864; --bg-accent: #E9EEF5;
+    --border: rgba(11,11,11,0.12); --border-strong: rgba(11,11,11,0.28);
+    --radius: 8px; --font-sans: Arial, Helvetica, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface-2: #1a1a19; --surface-1: #222221; --surface-0: #141413;
+      --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #898781;
+      --text-accent: #85B7EB; --bg-accent: #0C447C;
+      --border: rgba(255,255,255,0.14); --border-strong: rgba(255,255,255,0.28);
+    }
+  }
+  html, body { margin: 0; padding: 0; background: var(--surface-0); }
+  body { padding: 16px; }
+  @media (min-width: 700px) { body { padding: 24px 40px; } }
+
+  #ndc-app { font-family: var(--font-sans); color: var(--text-primary); }
+  #ndc-app * { box-sizing: border-box; }
+  #ndc-app h1 { font-size: 22px; font-weight: 500; margin: 0 0 4px; }
+  #ndc-app h2 { font-size: 18px; font-weight: 500; margin: 0 0 12px; }
+  #ndc-app h3 { font-size: 16px; font-weight: 500; margin: 0 0 10px; }
+  #ndc-app .sub { color: var(--text-secondary); font-size: 13px; margin: 0 0 20px; }
+  #ndc-app .tabs { display: flex; gap: 6px; border-bottom: 0.5px solid var(--border); margin-bottom: 20px; }
+  #ndc-app .tab-btn { padding: 8px 14px; font-size: 13px; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; color: var(--text-secondary); }
+  #ndc-app .tab-btn.active { color: var(--text-primary); border-bottom-color: var(--text-accent); font-weight: 500; }
+  #ndc-app .panel { display: none; }
+  #ndc-app .panel.active { display: block; }
+  #ndc-app .card { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 16px; }
+  #ndc-app label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+  #ndc-app input, #ndc-app select { width: 100%; margin-bottom: 10px; }
+  #ndc-app .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0 16px; }
+  #ndc-app .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0 16px; }
+  #ndc-app table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  #ndc-app th { text-align: left; font-weight: 500; color: var(--text-secondary); font-size: 12px; padding: 6px 8px; border-bottom: 0.5px solid var(--border); }
+  #ndc-app td { padding: 4px 6px; border-bottom: 0.5px solid var(--border); }
+  #ndc-app td input { margin-bottom: 0; padding: 4px 6px; height: 30px; font-size: 13px; }
+  #ndc-app .metric { background: var(--surface-1); border-radius: var(--radius); padding: 10px 14px; }
+  #ndc-app .metric .lbl { font-size: 12px; color: var(--text-secondary); }
+  #ndc-app .metric .val { font-size: 20px; font-weight: 500; }
+  #ndc-app .metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 12px 0; }
+  #ndc-app button.primary { background: var(--text-accent); color: var(--surface-2); border: none; padding: 9px 18px; border-radius: var(--radius); cursor: pointer; font-size: 14px; }
+  #ndc-app button.ghost { background: transparent; border: 0.5px solid var(--border-strong); padding: 8px 14px; border-radius: var(--radius); cursor: pointer; font-size: 13px; }
+  #ndc-app .area-card { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
+  #ndc-app .area-card:last-child { border-bottom: none; }
+  #ndc-app .badge { font-size: 11px; padding: 2px 8px; border-radius: var(--radius); background: var(--bg-accent); color: var(--text-accent); }
+  #ndc-app .empty { color: var(--text-muted); font-size: 13px; padding: 20px 0; text-align: center; }
+  #ndc-app .report-block { border-left: 2px solid var(--border-strong); padding-left: 14px; margin-bottom: 18px; }
+  #ndc-app .row-actions { display: flex; gap: 8px; }
+  #ndc-app .note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+</style>
+</head>
+<body>
+<div id="ndc-app">
+  <h1>Relatório do ensaio — eficiência e disponibilidade da colheita</h1>
+  <p class="sub">Nempa Tech × Monsanto do Brasil · Fase 1 · Milho</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="coleta">Nova coleta</button>
+    <button class="tab-btn" data-tab="areas">Áreas salvas (<span id="ndc-count">0</span>)</button>
+    <button class="tab-btn" data-tab="consolidado">Relatório consolidado</button>
+  </div>
+
+  <div class="panel active" id="panel-coleta">
+    <div class="card">
+      <h3>1. Identificação</h3>
+      <div class="grid2">
+        <div><label>Fazenda</label><input id="f-fazenda" placeholder="Ex.: Fazenda Santa Rita"></div>
+        <div><label>Cidade / UF</label><input id="f-cidade" placeholder="Ex.: Itaporã/MS"></div>
+        <div><label>Pipeline</label>
+          <select id="f-pipeline"><option value="Subtropical">Subtropical</option><option value="Tropical Highlands">Tropical Highlands</option><option value="Outro">Outro</option></select>
+        </div>
+        <div><label>Talhão</label><input id="f-talhao" placeholder="Ex.: Talhão 4"></div>
+        <div><label>Área do talhão (ha)</label><input id="f-area-ha" type="number" min="0"></div>
+        <div><label>Cultivar</label><input id="f-cultivar"></div>
+        <div><label>Data de plantio</label><input id="f-data-plantio" type="date"></div>
+        <div><label>Data da coleta</label><input id="f-data-coleta" type="date"></div>
+        <div><label>Momento</label>
+          <select id="f-momento"><option>Linha de base</option><option>Validação</option></select>
+        </div>
+        <div><label>Colhedora (modelo / nº frota)</label><input id="f-colhedora"></div>
+        <div><label>Equipe responsável</label><input id="f-equipe"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>2. Eficiência operacional, disponibilidade e consumo</h3>
+      <div class="grid3">
+        <div><label>Horas totais do período (h)</label><input id="f-horas-totais" type="number" step="0.1"></div>
+        <div><label>Horas disponíveis (h)</label><input id="f-horas-disp" type="number" step="0.1"></div>
+        <div><label>Distância medida (m)</label><input id="f-dist" type="number"></div>
+        <div><label>Tempo do trajeto (s)</label><input id="f-tempo-dist" type="number"></div>
+        <div><label>Combustível inicial (L)</label><input id="f-comb-ini" type="number" step="0.1"></div>
+        <div><label>Combustível final (L)</label><input id="f-comb-fim" type="number" step="0.1"></div>
+        <div><label>Área colhida no período (ha)</label><input id="f-area-colhida" type="number" step="0.1"></div>
+      </div>
+      <h3 style="margin-top:16px">Registro de paradas</h3>
+      <table>
+        <thead><tr><th>Causa</th><th>Início</th><th>Fim</th></tr></thead>
+        <tbody id="ndc-paradas-body"></tbody>
+      </table>
+      <div class="metrics-row" id="ndc-eficiencia-metrics"></div>
+    </div>
+
+    <div class="card">
+      <h3>3. Estudo de tempos e movimentos</h3>
+      <table>
+        <thead><tr><th>Ciclo</th><th>Produtivo (s)</th><th>Manobra (s)</th><th>Espera (s)</th></tr></thead>
+        <tbody id="ndc-tempos-body"></tbody>
+      </table>
+      <div class="metrics-row" id="ndc-tempos-metrics"></div>
+    </div>
+
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button class="primary" id="ndc-save">Salvar área</button>
+      <button class="ghost" id="ndc-clear">Limpar formulário</button>
+      <span class="note" id="ndc-save-status"></span>
+    </div>
+    <p class="note" style="margin-top:10px">Os dados ficam salvos neste navegador/dispositivo, mesmo sem internet. Use "Exportar dados" na aba "Áreas salvas" ao final do dia para levar os dados para outro computador.</p>
+  </div>
+
+  <div class="panel" id="panel-areas">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <h3 style="margin:0">Áreas salvas neste dispositivo</h3>
+        <div class="row-actions">
+          <button class="ghost" id="ndc-export-all">Exportar dados (.json)</button>
+          <button class="ghost" id="ndc-import-btn">Importar dados (.json)</button>
+          <input type="file" id="ndc-import-file" accept=".json" style="display:none">
+        </div>
+      </div>
+      <p class="note" id="ndc-import-status"></p>
+    </div>
+    <div class="card" id="ndc-areas-list"><div class="empty">Nenhuma área salva ainda.</div></div>
+  </div>
+
+  <div class="panel" id="panel-consolidado">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="margin:0">Relatório consolidado</h3>
+        <button class="ghost" id="ndc-print">Imprimir / exportar PDF</button>
+      </div>
+      <div id="ndc-consolidado-body"><div class="empty">Salve ao menos uma área para gerar o relatório consolidado.</div></div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const N_PARADAS = 8, N_TEMPOS = 5;
+  const CAUSAS = ["Mecânica", "Operacional", "Climática", "Logística"];
+  let currentEditId = null;
+
+  function el(id){ return document.getElementById(id); }
+  function fmt(n, d){ return (n === null || n === undefined || isNaN(n)) ? "—" : Number(n).toFixed(d === undefined ? 1 : d); }
+
+  function buildParadasRows(){
+    const body = el('ndc-paradas-body');
+    body.innerHTML = "";
+    for (let i = 0; i < N_PARADAS; i++){
+      const tr = document.createElement('tr');
+      const opts = `<option value=""></option>` + CAUSAS.map(c => `<option value="${c}">${c}</option>`).join("");
+      tr.innerHTML = `<td><select class="pa-causa" data-i="${i}">${opts}</select></td>
+        <td><input type="time" class="pa-ini" data-i="${i}"></td>
+        <td><input type="time" class="pa-fim" data-i="${i}"></td>`;
+      body.appendChild(tr);
+    }
+  }
+  function buildTemposRows(){
+    const body = el('ndc-tempos-body');
+    body.innerHTML = "";
+    for (let i = 1; i <= N_TEMPOS; i++){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${i}</td>
+        <td><input type="number" class="t-prod" data-i="${i}"></td>
+        <td><input type="number" class="t-man" data-i="${i}"></td>
+        <td><input type="number" class="t-esp" data-i="${i}"></td>`;
+      body.appendChild(tr);
+    }
+  }
+
+  function readNum(v){ return v === "" || v === null || v === undefined ? null : parseFloat(v); }
+
+  function collectForm(){
+    const paradas = [];
+    document.querySelectorAll('.pa-causa').forEach((sel, idx) => {
+      const ini = document.querySelectorAll('.pa-ini')[idx].value;
+      const fim = document.querySelectorAll('.pa-fim')[idx].value;
+      if (sel.value || ini || fim) paradas.push({ causa: sel.value, inicio: ini, fim: fim });
+    });
+    const tempos = [];
+    document.querySelectorAll('.t-prod').forEach((inp, idx) => {
+      tempos.push({
+        produtivo: readNum(inp.value),
+        manobra: readNum(document.querySelectorAll('.t-man')[idx].value),
+        espera: readNum(document.querySelectorAll('.t-esp')[idx].value)
+      });
+    });
+    return {
+      id: currentEditId || ('area_' + Date.now()),
+      fazenda: el('f-fazenda').value, cidade: el('f-cidade').value, pipeline: el('f-pipeline').value,
+      talhao: el('f-talhao').value, areaHa: readNum(el('f-area-ha').value), cultivar: el('f-cultivar').value,
+      dataPlantio: el('f-data-plantio').value, dataColeta: el('f-data-coleta').value, momento: el('f-momento').value,
+      colhedora: el('f-colhedora').value, equipe: el('f-equipe').value,
+      horasTotais: readNum(el('f-horas-totais').value), horasDisp: readNum(el('f-horas-disp').value),
+      dist: readNum(el('f-dist').value), tempoDist: readNum(el('f-tempo-dist').value),
+      combIni: readNum(el('f-comb-ini').value), combFim: readNum(el('f-comb-fim').value),
+      areaColhida: readNum(el('f-area-colhida').value),
+      paradas, tempos
+    };
+  }
+
+  function avg(arr){ return arr.length ? arr.reduce((a,b) => a+b, 0) / arr.length : null; }
+
+  function timeToMin(t){
+    if (!t) return null;
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  function computeMetrics(area){
+    const dm = (area.horasDisp !== null && area.horasTotais) ? (area.horasDisp / area.horasTotais * 100) : null;
+    const vel = (area.dist !== null && area.tempoDist) ? (area.dist / area.tempoDist * 3.6) : null;
+    const consumo = (area.combFim !== null && area.combIni !== null && area.areaColhida) ? ((area.combFim - area.combIni) / area.areaColhida) : null;
+
+    const paradasComDuracao = area.paradas.map(p => {
+      const ini = timeToMin(p.inicio), fim = timeToMin(p.fim);
+      const dur = (ini !== null && fim !== null) ? (fim - ini) : null;
+      return { causa: p.causa, dur };
+    });
+    const mecanicas = paradasComDuracao.filter(p => p.causa === 'Mecânica' && p.dur !== null);
+    const somaMec = mecanicas.reduce((a, b) => a + b.dur, 0);
+    const mttr = mecanicas.length ? somaMec / mecanicas.length : null;
+    const totalParadaMin = paradasComDuracao.reduce((a, b) => a + (b.dur || 0), 0);
+
+    const ciclos = area.tempos.map(t => {
+      const total = (t.produtivo || 0) + (t.manobra || 0) + (t.espera || 0);
+      return total > 0 ? { total, pct: t.produtivo / total } : null;
+    }).filter(c => c !== null);
+    const pctProdutivoMedio = avg(ciclos.map(c => c.pct));
+
+    return { dm, vel, consumo, mttr, totalParadaMin, nParadasMec: mecanicas.length, pctProdutivoMedio,
+              nParadasTotal: area.paradas.length };
+  }
+
+  function metricCard(lbl, val){
+    return `<div class="metric"><div class="lbl">${lbl}</div><div class="val">${val}</div></div>`;
+  }
+
+  function renderLiveMetrics(){
+    const area = collectForm();
+    const m = computeMetrics(area);
+    el('ndc-eficiencia-metrics').innerHTML =
+      metricCard('DM (%)', fmt(m.dm)) +
+      metricCard('Velocidade (km/h)', fmt(m.vel)) +
+      metricCard('Consumo (L/ha)', fmt(m.consumo, 2)) +
+      metricCard('MTTR (min)', fmt(m.mttr)) +
+      metricCard('Paradas mecânicas', m.nParadasMec);
+    el('ndc-tempos-metrics').innerHTML =
+      metricCard('% tempo produtivo (média)', m.pctProdutivoMedio !== null ? fmt(m.pctProdutivoMedio * 100) + '%' : '—');
+  }
+
+  function clearForm(){
+    currentEditId = null;
+    ['f-fazenda','f-cidade','f-talhao','f-area-ha','f-cultivar','f-data-plantio','f-data-coleta',
+     'f-colhedora','f-equipe','f-dist','f-tempo-dist','f-comb-ini','f-comb-fim',
+     'f-area-colhida','f-horas-totais','f-horas-disp'].forEach(id => el(id).value = '');
+    el('f-pipeline').value = 'Subtropical';
+    el('f-momento').value = 'Linha de base';
+    buildParadasRows(); buildTemposRows();
+    renderLiveMetrics();
+    el('ndc-save-status').textContent = '';
+  }
+
+  function loadFormFromArea(area){
+    currentEditId = area.id;
+    el('f-fazenda').value = area.fazenda || '';
+    el('f-cidade').value = area.cidade || '';
+    el('f-pipeline').value = area.pipeline || 'Subtropical';
+    el('f-talhao').value = area.talhao || '';
+    el('f-area-ha').value = area.areaHa ?? '';
+    el('f-cultivar').value = area.cultivar || '';
+    el('f-data-plantio').value = area.dataPlantio || '';
+    el('f-data-coleta').value = area.dataColeta || '';
+    el('f-momento').value = area.momento || 'Linha de base';
+    el('f-colhedora').value = area.colhedora || '';
+    el('f-equipe').value = area.equipe || '';
+    el('f-horas-totais').value = area.horasTotais ?? '';
+    el('f-horas-disp').value = area.horasDisp ?? '';
+    el('f-dist').value = area.dist ?? '';
+    el('f-tempo-dist').value = area.tempoDist ?? '';
+    el('f-comb-ini').value = area.combIni ?? '';
+    el('f-comb-fim').value = area.combFim ?? '';
+    el('f-area-colhida').value = area.areaColhida ?? '';
+    buildParadasRows();
+    area.paradas.forEach((p, i) => {
+      if (i >= N_PARADAS) return;
+      document.querySelectorAll('.pa-causa')[i].value = p.causa || '';
+      document.querySelectorAll('.pa-ini')[i].value = p.inicio || '';
+      document.querySelectorAll('.pa-fim')[i].value = p.fim || '';
+    });
+    buildTemposRows();
+    area.tempos.forEach((t, i) => {
+      if (t.produtivo !== null) document.querySelectorAll('.t-prod')[i].value = t.produtivo;
+      if (t.manobra !== null) document.querySelectorAll('.t-man')[i].value = t.manobra;
+      if (t.espera !== null) document.querySelectorAll('.t-esp')[i].value = t.espera;
+    });
+    renderLiveMetrics();
+    switchTab('coleta');
+  }
+
+  const STORAGE_KEY = 'ndc_areas_v2';
+
+  function readStore(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e){
+      return {};
+    }
+  }
+  function writeStore(obj){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+  }
+
+  function saveArea(){
+    const area = collectForm();
+    if (!area.fazenda){
+      el('ndc-save-status').textContent = 'Informe ao menos o nome da fazenda.';
+      return;
+    }
+    try {
+      const store = readStore();
+      store[area.id] = area;
+      writeStore(store);
+      currentEditId = area.id;
+      el('ndc-save-status').textContent = 'Área salva neste dispositivo.';
+      refreshAreasList();
+    } catch(e){
+      el('ndc-save-status').textContent = 'Erro ao salvar: ' + e.message;
+    }
+  }
+
+  function loadAllAreas(){
+    const store = readStore();
+    const areas = Object.values(store);
+    areas.sort((a, b) => (a.fazenda || '').localeCompare(b.fazenda || ''));
+    return areas;
+  }
+
+  function deleteArea(id){
+    const store = readStore();
+    delete store[id];
+    writeStore(store);
+    refreshAreasList();
+  }
+
+  function downloadJSON(data, filename){
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function exportAll(){
+    const areas = loadAllAreas();
+    if (!areas.length){
+      el('ndc-import-status').textContent = 'Não há áreas salvas para exportar.';
+      return;
+    }
+    const stamp = new Date().toISOString().slice(0, 10);
+    downloadJSON(areas, `dados_eficiencia_colheita_${stamp}.json`);
+    el('ndc-import-status').textContent = `${areas.length} área(s) exportada(s).`;
+  }
+
+  function importFromFile(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        const list = Array.isArray(parsed) ? parsed : [parsed];
+        const store = readStore();
+        let count = 0;
+        list.forEach(area => {
+          if (area && area.id){
+            store[area.id] = area;
+            count++;
+          }
+        });
+        writeStore(store);
+        refreshAreasList();
+        el('ndc-import-status').textContent = `${count} área(s) importada(s) com sucesso.`;
+      } catch(e){
+        el('ndc-import-status').textContent = 'Arquivo inválido. Verifique se é um .json exportado por este app.';
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function refreshAreasList(){
+    const areas = loadAllAreas();
+    el('ndc-count').textContent = areas.length;
+    const container = el('ndc-areas-list');
+    if (!areas.length){
+      container.innerHTML = '<div class="empty">Nenhuma área salva ainda.</div>';
+    } else {
+      container.innerHTML = areas.map(a => `
+        <div class="area-card">
+          <div>
+            <strong>${a.fazenda || '(sem nome)'}</strong> — ${a.talhao || ''} <span class="badge">${a.pipeline || ''}</span>
+            <div class="note">${a.cidade || ''} · ${a.dataColeta || 'sem data'} · ${a.momento || ''}</div>
+          </div>
+          <div class="row-actions">
+            <button class="ghost" data-action="edit" data-id="${a.id}">Editar</button>
+            <button class="ghost" data-action="delete" data-id="${a.id}">Excluir</button>
+          </div>
+        </div>`).join('');
+      container.querySelectorAll('[data-action="edit"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const areas = loadAllAreas();
+          const a = areas.find(x => x.id === btn.dataset.id);
+          if (a) loadFormFromArea(a);
+        });
+      });
+      container.querySelectorAll('[data-action="delete"]').forEach(btn => {
+        btn.addEventListener('click', () => deleteArea(btn.dataset.id));
+      });
+    }
+    renderConsolidado(areas);
+  }
+
+  function renderConsolidado(areas){
+    const container = el('ndc-consolidado-body');
+    if (!areas.length){
+      container.innerHTML = '<div class="empty">Salve ao menos uma área para gerar o relatório consolidado.</div>';
+      return;
+    }
+    const rows = areas.map(a => ({ area: a, m: computeMetrics(a) }));
+    const byPipeline = {};
+    rows.forEach(r => {
+      const p = r.area.pipeline || 'Outro';
+      if (!byPipeline[p]) byPipeline[p] = [];
+      byPipeline[p].push(r);
+    });
+
+    let html = '';
+    html += `<h3>Resumo geral (${areas.length} área${areas.length > 1 ? 's' : ''} avaliada${areas.length > 1 ? 's' : ''})</h3>`;
+    html += '<table><thead><tr><th>Fazenda</th><th>Pipeline</th><th>DM (%)</th><th>MTTR (min)</th><th>Consumo (L/ha)</th><th>% tempo produtivo</th></tr></thead><tbody>';
+    rows.forEach(r => {
+      html += `<tr><td>${r.area.fazenda}</td><td>${r.area.pipeline || '—'}</td><td>${fmt(r.m.dm)}</td><td>${fmt(r.m.mttr)}</td><td>${fmt(r.m.consumo, 2)}</td><td>${r.m.pctProdutivoMedio !== null ? fmt(r.m.pctProdutivoMedio * 100) : '—'}</td></tr>`;
+    });
+    html += '</tbody></table>';
+
+    html += '<h3 style="margin-top:20px">Médias por pipeline</h3>';
+    html += '<table><thead><tr><th>Pipeline</th><th>Nº áreas</th><th>DM médio (%)</th><th>MTTR médio (min)</th><th>Consumo médio (L/ha)</th></tr></thead><tbody>';
+    Object.keys(byPipeline).forEach(p => {
+      const group = byPipeline[p];
+      const avgOf = key => avg(group.map(g => g.m[key]).filter(v => v !== null && !isNaN(v)));
+      html += `<tr><td>${p}</td><td>${group.length}</td><td>${fmt(avgOf('dm'))}</td><td>${fmt(avgOf('mttr'))}</td><td>${fmt(avgOf('consumo'), 2)}</td></tr>`;
+    });
+    html += '</tbody></table>';
+
+    html += '<h3 style="margin-top:20px">Relatórios individuais</h3>';
+    rows.forEach(r => {
+      const a = r.area, m = r.m;
+      html += `<div class="report-block">
+        <h3 style="margin-bottom:2px">${a.fazenda} — ${a.talhao || ''}</h3>
+        <div class="note">${a.cidade || ''} · ${a.pipeline || ''} · ${a.momento || ''} · Coleta: ${a.dataColeta || '—'} · Cultivar: ${a.cultivar || '—'}</div>
+        <p style="font-size:13px; margin:10px 0 4px"><strong>Eficiência e disponibilidade:</strong> DM ${fmt(m.dm)}%, MTTR ${fmt(m.mttr)} min (${m.nParadasMec} parada${m.nParadasMec === 1 ? '' : 's'} mecânica${m.nParadasMec === 1 ? '' : 's'}), velocidade ${fmt(m.vel)} km/h.</p>
+        <p style="font-size:13px; margin:4px 0"><strong>Consumo:</strong> ${fmt(m.consumo, 2)} L/ha.</p>
+        <p style="font-size:13px; margin:4px 0"><strong>Tempos e movimentos:</strong> ${m.pctProdutivoMedio !== null ? fmt(m.pctProdutivoMedio * 100) + '% de tempo produtivo em média' : 'sem ciclos registrados'}.</p>
+      </div>`;
+    });
+
+    container.innerHTML = html;
+  }
+
+  function switchTab(name){
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+  el('ndc-save').addEventListener('click', saveArea);
+  el('ndc-clear').addEventListener('click', clearForm);
+  el('ndc-print').addEventListener('click', () => window.print());
+  el('ndc-export-all').addEventListener('click', exportAll);
+  el('ndc-import-btn').addEventListener('click', () => el('ndc-import-file').click());
+  el('ndc-import-file').addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) importFromFile(e.target.files[0]);
+    e.target.value = '';
+  });
+  document.getElementById('ndc-app').addEventListener('input', renderLiveMetrics);
+
+  buildParadasRows(); buildTemposRows();
+  renderLiveMetrics();
+  refreshAreasList();
+})();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
