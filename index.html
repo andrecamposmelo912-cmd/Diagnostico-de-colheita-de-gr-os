@@ -6,6 +6,9 @@
 <title>Nempa Tech — Sistemas de Colheita</title>
 <meta name="theme-color" content="#0045DF">
 <meta name="description" content="Portal Nempa Tech: acesso aos sistemas de Eficiência da Colheita e Checklist de Manutenção">
+<script>
+  window.__fbReady = new Promise((resolve) => { window.__fbReadyResolve = resolve; });
+</script>
 <style>
   :root {
     --nempa-cyan: #00B8FD;
@@ -44,6 +47,19 @@
   .card p { font-size: 13.5px; color: var(--text-secondary); margin: 0 0 16px; line-height: 1.5; }
   .card .go { font-size: 13px; font-weight: 600; color: var(--nempa-blue); display: flex; align-items: center; gap: 6px; }
   .footer { text-align: center; margin-top: 36px; font-size: 12px; color: var(--text-muted); }
+
+  .topbar { display: flex; justify-content: flex-end; align-items: center; gap: 10px; font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  button.ghost { background: var(--surface-2); border: 1px solid var(--border-strong); padding: 7px 14px; border-radius: 9px; cursor: pointer; font-size: 12.5px; font-weight: 500; color: var(--text-primary); }
+  button.ghost:hover { border-color: var(--nempa-blue); color: var(--nempa-blue); }
+  button.primary { background: var(--nempa-grad); color: #fff; border: none; padding: 10px 20px; border-radius: 9px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-top: 6px; }
+
+  #login-card { max-width: 380px; margin: 0 auto; background: var(--surface-2); border: 1px solid var(--border); border-radius: 16px; padding: 28px 26px; box-shadow: 0 1px 3px rgba(0,20,60,0.05); text-align: left; }
+  #login-card label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; font-weight: 500; }
+  #login-card input { width: 100%; margin-bottom: 12px; border: 1px solid var(--border-strong); border-radius: 8px; padding: 9px 10px; font-size: 13.5px; background: var(--surface-2); color: var(--text-primary); }
+  #login-card h3 { font-size: 17px; margin: 0 0 16px; }
+  .note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  #app-area { display: none; }
+  #login-area { display: none; }
 </style>
 </head>
 <body>
@@ -53,21 +69,154 @@
       <h1>Sistemas de Colheita — NEMPA TECH</h1>
       <p>Monsanto do Brasil · Milho</p>
     </div>
-    <div class="cards">
-      <a class="card" href="./eficiencia/">
-        <div class="icon-bar"></div>
-        <h2>Eficiência da Colheita</h2>
-        <p>Coleta de dados de campo, disponibilidade mecânica, consumo, tempos e movimentos, e descarga do trator com bazuca.</p>
-        <div class="go">Acessar sistema →</div>
-      </a>
-      <a class="card" href="./manutencao/">
-        <div class="icon-bar"></div>
-        <h2>Checklist de Manutenção</h2>
-        <p>Inspeção de colhedoras por componente, com fotos, geolocalização e classificação de conformidade.</p>
-        <div class="go">Acessar sistema →</div>
-      </a>
+
+    <div id="login-area">
+      <div id="login-card">
+        <h3>Entrar no sistema</h3>
+        <label>E-mail</label>
+        <input id="login-email" type="email" placeholder="seu.email@empresa.com">
+        <label>Senha</label>
+        <input id="login-password" type="password">
+        <button class="primary" id="login-btn">Entrar</button>
+        <div style="display:flex; align-items:center; gap:10px; margin:16px 0;">
+          <div style="flex:1; height:1px; background:var(--border-strong);"></div>
+          <span class="note" style="margin:0;">ou</span>
+          <div style="flex:1; height:1px; background:var(--border-strong);"></div>
+        </div>
+        <button class="ghost" id="login-google-btn" style="width:100%;">Entrar com Google</button>
+        <p class="note" id="login-status"></p>
+        <p class="note" style="margin-top:14px">Acesso restrito à equipe autorizada. Se você ainda não tem uma conta, peça ao administrador do sistema para criá-la.</p>
+      </div>
     </div>
-    <div class="footer">Cada sistema funciona de forma independente, com login e dados próprios.</div>
+
+    <div id="app-area">
+      <div class="topbar">
+        <span id="user-email"></span>
+        <button class="ghost" id="logout-btn">Sair</button>
+      </div>
+      <div class="cards">
+        <a class="card" href="./eficiencia/">
+          <div class="icon-bar"></div>
+          <h2>Eficiência da Colheita</h2>
+          <p>Coleta de dados de campo, disponibilidade mecânica, consumo, tempos e movimentos, e descarga do trator com bazuca.</p>
+          <div class="go">Acessar sistema →</div>
+        </a>
+        <a class="card" href="./manutencao/">
+          <div class="icon-bar"></div>
+          <h2>Checklist de Manutenção</h2>
+          <p>Inspeção de colhedoras por componente, com fotos, geolocalização e classificação de conformidade.</p>
+          <div class="go">Acessar sistema →</div>
+        </a>
+      </div>
+      <div class="footer">Cada sistema abre já autenticado — não é preciso logar de novo.</div>
+    </div>
   </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut,
+    GoogleAuthProvider, signInWithPopup
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDIKAY-mzetMrT7zwozq87nWFmII2dn5ho",
+    authDomain: "nempatech-colheita.firebaseapp.com",
+    projectId: "nempatech-colheita",
+    storageBucket: "nempatech-colheita.firebasestorage.app",
+    messagingSenderId: "660896300786",
+    appId: "1:660896300786:web:6f36d219321bf8cee0da6b",
+    measurementId: "G-LFKYJK1DBK"
+  };
+
+  const fbApp = initializeApp(firebaseConfig);
+  const auth = getAuth(fbApp);
+  const db = getFirestore(fbApp);
+
+  async function isAuthorized(email){
+    try {
+      const snap = await getDoc(doc(db, 'usuarios_autorizados', email));
+      return snap.exists();
+    } catch(e){
+      return false;
+    }
+  }
+  async function doLogin(email, password){
+    await signInWithEmailAndPassword(auth, email, password);
+  }
+  async function doLoginGoogle(){
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const email = result.user.email;
+    const ok = await isAuthorized(email);
+    if (!ok){
+      await signOut(auth);
+      throw new Error('Este e-mail não está autorizado a acessar o sistema. Peça ao administrador para liberar o acesso.');
+    }
+  }
+  async function doLogout(){
+    await signOut(auth);
+  }
+
+  window.__fb = { doLogin, doLoginGoogle, doLogout };
+  window.__fbReadyResolve(window.__fb);
+
+  onAuthStateChanged(auth, (user) => {
+    window.__fbUser = user ? user.email : null;
+    document.dispatchEvent(new CustomEvent('fb-auth-changed', { detail: { user: user ? user.email : null } }));
+  });
+</script>
+
+<script>
+  function el(id){ return document.getElementById(id); }
+
+  function showApp(email){
+    el('login-area').style.display = 'none';
+    el('app-area').style.display = 'block';
+    el('user-email').textContent = email || '';
+  }
+  function showLogin(msg){
+    el('login-area').style.display = 'block';
+    el('app-area').style.display = 'none';
+    if (msg) el('login-status').textContent = msg;
+  }
+
+  el('login-btn').addEventListener('click', async () => {
+    const email = el('login-email').value.trim();
+    const password = el('login-password').value;
+    if (!email || !password){ el('login-status').textContent = 'Preencha e-mail e senha.'; return; }
+    el('login-status').textContent = 'Entrando...';
+    try {
+      await window.__fbReady;
+      await window.__fb.doLogin(email, password);
+    } catch(e){
+      el('login-status').textContent = 'Não foi possível entrar. Verifique e-mail e senha, ou sua conexão.';
+    }
+  });
+  el('login-google-btn').addEventListener('click', async () => {
+    el('login-status').textContent = 'Entrando com Google...';
+    try {
+      await window.__fbReady;
+      await window.__fb.doLoginGoogle();
+    } catch(e){
+      el('login-status').textContent = e && e.message ? e.message : 'Não foi possível entrar com Google.';
+    }
+  });
+  el('logout-btn').addEventListener('click', async () => {
+    try { await window.__fbReady; await window.__fb.doLogout(); } catch(e){}
+  });
+
+  document.addEventListener('fb-auth-changed', (ev) => {
+    const userEmail = ev.detail.user;
+    if (userEmail) showApp(userEmail);
+    else showLogin();
+  });
+
+  // Enquanto o Firebase carrega, mostra o login (evita piscar a tela errada)
+  showLogin();
+</script>
 </body>
 </html>

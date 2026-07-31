@@ -68,9 +68,9 @@
   #ndc-app .metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 12px 0; }
   #ndc-app button.primary { background: var(--nempa-grad); color: #fff; border: none; padding: 10px 20px; border-radius: 9px; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,69,223,0.25); }
   #ndc-app button.primary:hover { filter: brightness(1.05); }
-  #ndc-app button.ghost { background: var(--surface-2); border: 1px solid var(--border-strong); padding: 9px 15px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-primary); }
-  #ndc-app button.ghost:hover { border-color: var(--nempa-blue); color: var(--nempa-blue); }
-  #ndc-app button.small { padding: 5px 10px; font-size: 12px; }
+  #ndc-app button.ghost, #ndc-app a.ghost { background: var(--surface-2); border: 1px solid var(--border-strong); padding: 9px 15px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-primary); display: inline-block; }
+  #ndc-app button.ghost:hover, #ndc-app a.ghost:hover { border-color: var(--nempa-blue); color: var(--nempa-blue); }
+  #ndc-app button.small, #ndc-app a.small { padding: 5px 10px; font-size: 12px; }
   #ndc-app .area-card { display: flex; justify-content: space-between; align-items: center; padding: 12px 4px; border-bottom: 1px solid var(--border); }
   #ndc-app .area-card:last-child { border-bottom: none; }
   #ndc-app .badge { font-size: 11px; padding: 3px 9px; border-radius: 20px; background: var(--bg-accent); color: var(--nempa-blue); font-weight: 600; }
@@ -146,6 +146,7 @@
       <h1>Checklist de Manutenção de Colhedoras</h1>
       <p class="sub">NEMPA TECH · Monsanto do Brasil · Milho</p>
     </div>
+    <a href="../" class="ghost small" style="text-decoration:none; margin-left:auto; white-space:nowrap;">← Início</a>
   </div>
 
   <div class="sync-status">
