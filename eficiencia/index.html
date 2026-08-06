@@ -4,11 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Eficiência da Colheita — Nempa Tech</title>
-<meta name="theme-color" content="#0045DF">
+<meta name="theme-color" content="#0038DC">
 <meta name="description" content="Sistema Nempa Tech de coleta e relatório de eficiência, disponibilidade e consumo na colheita de milho">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>
   window.__fbReady = new Promise((resolve) => { window.__fbReadyResolve = resolve; });
 </script>
@@ -18,7 +21,7 @@
     --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #898781;
     --bg-accent: #E6F3FF;
     --border: rgba(11,11,11,0.10); --border-strong: rgba(11,11,11,0.24);
-    --radius: 8px; --font-sans: Arial, Helvetica, sans-serif;
+    --radius: 8px; --font-sans: 'Montserrat', Arial, Helvetica, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -29,12 +32,12 @@
     }
   }
   html, body { margin: 0; padding: 0; background: var(--surface-0); }
-  body { padding: 16px; }
+  body { padding: 16px; font-family: 'Montserrat', Arial, Helvetica, sans-serif; }
   @media (min-width: 700px) { body { padding: 28px 40px; } }
 
   :root {
-    --nempa-cyan: #00B8FD;
-    --nempa-blue: #0045DF;
+    --nempa-cyan: #00B4FC;
+    --nempa-blue: #0038DC;
     --nempa-grad: linear-gradient(135deg, var(--nempa-cyan), var(--nempa-blue));
   }
   #ndc-app { font-family: var(--font-sans); color: var(--text-primary); max-width: 900px; margin: 0 auto; }
@@ -54,7 +57,7 @@
   #ndc-app .card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.15rem 1.35rem; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,20,60,0.05), 0 1px 2px rgba(0,20,60,0.04); }
   #ndc-app label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; font-weight: 500; }
   #ndc-app input, #ndc-app select, #ndc-app textarea { width: 100%; margin-bottom: 10px; font-family: inherit; border: 1px solid var(--border-strong); border-radius: 8px; padding: 8px 10px; font-size: 13.5px; background: var(--surface-2); color: var(--text-primary); }
-  #ndc-app input:focus, #ndc-app select:focus, #ndc-app textarea:focus { outline: none; border-color: var(--nempa-blue); box-shadow: 0 0 0 3px rgba(0,69,223,0.12); }
+  #ndc-app input:focus, #ndc-app select:focus, #ndc-app textarea:focus { outline: none; border-color: var(--nempa-blue); box-shadow: 0 0 0 3px rgba(0,56,220,0.12); }
   #ndc-app textarea { resize: vertical; min-height: 50px; }
   #ndc-app .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0 16px; }
   #ndc-app .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0 16px; }
@@ -62,11 +65,12 @@
   #ndc-app th { text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.3px; padding: 8px; border-bottom: 1px solid var(--border); }
   #ndc-app td { padding: 7px 8px; border-bottom: 1px solid var(--border); }
   #ndc-app td input { margin-bottom: 0; padding: 4px 6px; height: 30px; font-size: 13px; }
+  #ndc-app td input + button.t-timer-btn { display: block; margin-top: 5px; width: 100%; }
   #ndc-app .metric { background: var(--surface-1); border-radius: 10px; padding: 12px 14px; border: 1px solid var(--border); }
   #ndc-app .metric .lbl { font-size: 11.5px; color: var(--text-secondary); font-weight: 500; }
   #ndc-app .metric .val { font-size: 21px; font-weight: 700; color: var(--nempa-blue); margin-top: 2px; }
   #ndc-app .metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 12px 0; }
-  #ndc-app button.primary { background: var(--nempa-grad); color: #fff; border: none; padding: 10px 20px; border-radius: 9px; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,69,223,0.25); }
+  #ndc-app button.primary { background: var(--nempa-grad); color: #fff; border: none; padding: 10px 20px; border-radius: 9px; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,56,220,0.25); }
   #ndc-app button.primary:hover { filter: brightness(1.05); }
   #ndc-app button.ghost, #ndc-app a.ghost { background: var(--surface-2); border: 1px solid var(--border-strong); padding: 9px 15px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-primary); display: inline-block; }
   #ndc-app button.ghost:hover, #ndc-app a.ghost:hover { border-color: var(--nempa-blue); color: var(--nempa-blue); }
@@ -90,6 +94,21 @@
   .sync-status .dot.offline { background: #A32E23; }
   .sync-status button { margin-left: auto; }
 
+  #ndc-app .print-area { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem 1.75rem; }
+  #ndc-app .print-area h3 { font-size: 16px; }
+  #ndc-app .print-area table { margin-bottom: 14px; }
+  #ndc-app .print-area .print-break { break-inside: avoid; padding-top: 14px; padding-bottom: 4px; }
+
+  @media print {
+    body * { visibility: hidden; }
+    #panel-imprimir, #panel-imprimir * { visibility: visible; }
+    #panel-imprimir { display: block !important; position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
+    #panel-imprimir .no-print { display: none !important; }
+    #panel-imprimir .print-area { border: none; box-shadow: none; padding: 0; }
+    #panel-imprimir .print-break { break-inside: avoid; page-break-inside: avoid; }
+    #panel-imprimir table { break-inside: avoid; page-break-inside: avoid; }
+  }
+
 </style>
 </head>
 <body>
@@ -105,6 +124,7 @@
       <label>Senha</label>
       <input id="login-password" type="password">
       <button class="primary" id="login-btn">Entrar</button>
+      <p style="text-align:right; margin:8px 0 0;"><a href="#" id="login-forgot-link" class="note" style="color:var(--nempa-blue);">Esqueci minha senha</a></p>
       <div style="display:flex; align-items:center; gap:10px; margin:16px 0;">
         <div style="flex:1; height:1px; background:var(--border-strong);"></div>
         <span class="note" style="margin:0;">ou</span>
@@ -138,30 +158,31 @@
     <button class="tab-btn active" data-tab="coleta">Nova coleta</button>
     <button class="tab-btn" data-tab="areas">Colheitas salvas (<span id="ndc-count">0</span>)</button>
     <button class="tab-btn" data-tab="consolidado">Relatório consolidado</button>
+    <button class="tab-btn" data-tab="imprimir">Imprimir</button>
   </div>
 
   <div class="panel active" id="panel-coleta">
     <div class="card">
       <h3>1. Identificação</h3>
       <div class="grid2">
-        <div><label>Fazenda</label><input id="f-fazenda" placeholder="Ex.: Fazenda Santa Rita"></div>
-        <div><label>Cidade / UF</label><input id="f-cidade" placeholder="Ex.: Itaporã/MS"></div>
+        <div><label>Fazenda</label><input id="f-fazenda" placeholder="Ex.: Fazenda Santa Rita" list="dl-fazenda"><datalist id="dl-fazenda"></datalist></div>
+        <div><label>Cidade / UF</label><input id="f-cidade" placeholder="Ex.: Itaporã/MS" list="dl-cidade"><datalist id="dl-cidade"></datalist></div>
         <div><label>Pipeline</label>
           <select id="f-pipeline"><option value="Subtropical">Subtropical</option><option value="Tropical Highlands">Tropical Highlands</option><option value="Outro">Outro</option></select>
         </div>
-        <div><label>Talhão</label><input id="f-talhao" placeholder="Ex.: Talhão 4"></div>
+        <div><label>Talhão</label><input id="f-talhao" placeholder="Ex.: Talhão 4" list="dl-talhao"><datalist id="dl-talhao"></datalist></div>
         <div><label>Área do talhão (ha)</label><input id="f-area-ha" type="number" min="0"></div>
-        <div><label>Cultivar</label><input id="f-cultivar"></div>
+        <div><label>Cultivar</label><input id="f-cultivar" list="dl-cultivar"><datalist id="dl-cultivar"></datalist></div>
         <div><label>Data de plantio</label><input id="f-data-plantio" type="date"></div>
         <div><label>Data da coleta</label><input id="f-data-coleta" type="date"></div>
         <div><label>Momento</label>
           <select id="f-momento"><option>Linha de base</option><option>Validação</option></select>
         </div>
-        <div><label>Marca da colhedora</label><input id="f-marca" placeholder="Ex.: John Deere"></div>
-        <div><label>Modelo da colhedora</label><input id="f-modelo" placeholder="Ex.: S540"></div>
-        <div><label>Frota (nº)</label><input id="f-frota" placeholder="Ex.: 12"></div>
-        <div><label>Nome do operador</label><input id="f-operador" placeholder="Ex.: João da Silva"></div>
-        <div><label>Equipe responsável</label><input id="f-equipe"></div>
+        <div><label>Marca da colhedora</label><input id="f-marca" placeholder="Ex.: John Deere" list="dl-marca"><datalist id="dl-marca"></datalist></div>
+        <div><label>Modelo da colhedora</label><input id="f-modelo" placeholder="Ex.: S540" list="dl-modelo"><datalist id="dl-modelo"></datalist></div>
+        <div><label>Frota (nº)</label><input id="f-frota" placeholder="Ex.: 12" list="dl-frota"><datalist id="dl-frota"></datalist></div>
+        <div><label>Nome do operador</label><input id="f-operador" placeholder="Ex.: João da Silva" list="dl-operador"><datalist id="dl-operador"></datalist></div>
+        <div><label>Equipe responsável</label><input id="f-equipe" list="dl-equipe"><datalist id="dl-equipe"></datalist></div>
       </div>
     </div>
 
@@ -179,7 +200,7 @@
       </div>
       <h3 style="margin-top:16px">Registro de paradas</h3>
       <table>
-        <thead><tr><th>Causa</th><th>Início</th><th>Fim</th><th>Ação</th></tr></thead>
+        <thead><tr><th>Causa</th><th>Início</th><th>Fim</th><th>Duração</th><th>Ação</th></tr></thead>
         <tbody id="ndc-paradas-body"></tbody>
       </table>
       <div class="metrics-row" id="ndc-eficiencia-metrics"></div>
@@ -207,6 +228,7 @@
     <div style="display:flex; gap:10px; align-items:center;">
       <button class="primary" id="ndc-save">Salvar colheita</button>
       <button class="ghost" id="ndc-clear">Limpar formulário</button>
+      <button class="ghost" id="ndc-simular">Simular dados de teste</button>
       <span class="note" id="ndc-save-status"></span>
     </div>
     <p class="note" style="margin-top:10px">Os dados ficam salvos neste navegador/dispositivo, mesmo sem internet.</p>
@@ -236,13 +258,26 @@
       <div id="ndc-consolidado-body"><div class="empty">Salve ao menos uma colheita para gerar o relatório consolidado.</div></div>
     </div>
   </div>
+
+  <div class="panel" id="panel-imprimir">
+    <div class="card no-print">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h3 style="margin:0 0 4px">Versão para impressão</h3>
+          <p class="note" style="margin:0">Layout preparado para folha de papel — clique em "Imprimir" e escolha "Salvar como PDF" se preferir um arquivo.</p>
+        </div>
+        <button class="primary" id="ndc-print-agora">Imprimir</button>
+      </div>
+    </div>
+    <div id="ndc-imprimir-body" class="print-area"><div class="empty">Salve ao menos uma colheita para gerar o relatório de impressão.</div></div>
+  </div>
   </div>
 </div>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
     getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut,
-    GoogleAuthProvider, signInWithPopup
+    GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
     getFirestore, doc, setDoc, deleteDoc, getDoc, getDocs, collection,
@@ -308,8 +343,11 @@
   async function doLogout(){
     await signOut(auth);
   }
+  async function doPasswordReset(email){
+    await sendPasswordResetEmail(auth, email);
+  }
 
-  window.__fb = { cloudSave, cloudDelete, cloudFetchAll, doLogin, doLoginGoogle, doLogout };
+  window.__fb = { cloudSave, cloudDelete, cloudFetchAll, doLogin, doLoginGoogle, doLogout, doPasswordReset };
   window.__fbReadyResolve(window.__fb);
 
   onAuthStateChanged(auth, (user) => {
@@ -320,6 +358,7 @@
   window.addEventListener('online', () => document.dispatchEvent(new CustomEvent('fb-net-changed', { detail: { online: true } })));
   window.addEventListener('offline', () => document.dispatchEvent(new CustomEvent('fb-net-changed', { detail: { online: false } })));
 </script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
 <script>
 (function(){
   const N_PARADAS = 8, N_TEMPOS = 5, N_TRATOR = 5;
@@ -336,23 +375,32 @@
   }
   function timeToSec(t){
     if (!t) return null;
-    const parts = t.split(':').map(Number);
+    const [hms, msPart] = t.split('.');
+    const parts = hms.split(':').map(Number);
     const h = parts[0] || 0, m = parts[1] || 0, s = parts[2] || 0;
-    return h * 3600 + m * 60 + s;
+    const ms = msPart ? Number(msPart.padEnd(3, '0').slice(0, 3)) : 0;
+    if (isNaN(h) || isNaN(m) || isNaN(s) || isNaN(ms)) return null;
+    return h * 3600 + m * 60 + s + ms / 1000;
   }
-  function secToMMSS(sec){
+  function secToMMSS(sec, withMs){
     if (sec === null || sec === undefined || isNaN(sec)) return "—";
-    const s = Math.round(sec);
-    const mm = Math.floor(s / 60), ss = s % 60;
-    return `${mm}:${String(ss).padStart(2, '0')}`;
+    const totalMs = Math.round(sec * 1000);
+    const mm = Math.floor(totalMs / 60000);
+    const ss = Math.floor((totalMs % 60000) / 1000);
+    const ms = totalMs % 1000;
+    return withMs
+      ? `${mm}:${String(ss).padStart(2, '0')}.${String(ms).padStart(3, '0')}`
+      : `${mm}:${String(ss).padStart(2, '0')}`;
   }
-  function nowTimeString(withSeconds){
+  function nowTimeString(withSeconds, withMs){
     const d = new Date();
     const hh = String(d.getHours()).padStart(2, '0');
     const mm = String(d.getMinutes()).padStart(2, '0');
     if (!withSeconds) return `${hh}:${mm}`;
     const ss = String(d.getSeconds()).padStart(2, '0');
-    return `${hh}:${mm}:${ss}`;
+    if (!withMs) return `${hh}:${mm}:${ss}`;
+    const mss = String(d.getMilliseconds()).padStart(3, '0');
+    return `${hh}:${mm}:${ss}.${mss}`;
   }
   function readNum(v){ return v === "" || v === null || v === undefined ? null : parseFloat(v); }
   function machineLabel(area){
@@ -381,15 +429,27 @@
       const tr = document.createElement('tr');
       const opts = `<option value=""></option>` + CAUSAS.map(c => `<option value="${c}">${c}</option>`).join("");
       tr.innerHTML = `<td><select class="pa-causa" data-i="${i}">${opts}</select></td>
-        <td><input type="time" class="pa-ini" data-i="${i}"></td>
-        <td><input type="time" class="pa-fim" data-i="${i}"></td>
+        <td><input type="text" class="pa-ini" data-i="${i}" placeholder="HH:MM:SS.mmm"></td>
+        <td><input type="text" class="pa-fim" data-i="${i}" placeholder="HH:MM:SS.mmm"></td>
+        <td class="pa-dur" data-i="${i}">—</td>
         <td><button type="button" class="ghost small pa-timer-btn" data-i="${i}">Iniciar</button></td>`;
       body.appendChild(tr);
     }
     body.querySelectorAll('.pa-timer-btn').forEach(btn => {
       btn.addEventListener('click', () => handleParadaTimer(btn.dataset.i));
     });
-    for (let i = 0; i < N_PARADAS; i++) updateParadaTimerBtn(i);
+    body.querySelectorAll('.pa-ini, .pa-fim').forEach(inp => {
+      inp.addEventListener('input', () => updateParadaDuration(inp.dataset.i));
+    });
+    for (let i = 0; i < N_PARADAS; i++){ updateParadaTimerBtn(i); updateParadaDuration(i); }
+  }
+  function updateParadaDuration(i){
+    const cell = document.querySelector(`.pa-dur[data-i="${i}"]`);
+    if (!cell) return;
+    const ini = document.querySelector(`.pa-ini[data-i="${i}"]`).value;
+    const fim = document.querySelector(`.pa-fim[data-i="${i}"]`).value;
+    const s1 = timeToSec(ini), s2 = timeToSec(fim);
+    cell.textContent = (s1 !== null && s2 !== null && s2 >= s1) ? secToMMSS(s2 - s1) : "—";
   }
   function updateParadaTimerBtn(i){
     const btn = document.querySelector(`.pa-timer-btn[data-i="${i}"]`);
@@ -402,27 +462,64 @@
     const iniInput = document.querySelector(`.pa-ini[data-i="${i}"]`);
     const fimInput = document.querySelector(`.pa-fim[data-i="${i}"]`);
     if (!iniInput.value){
-      iniInput.value = nowTimeString(false);
+      iniInput.value = nowTimeString(true, true);
       fimInput.value = '';
     } else if (!fimInput.value){
-      fimInput.value = nowTimeString(false);
+      fimInput.value = nowTimeString(true, true);
     } else {
-      iniInput.value = nowTimeString(false);
+      iniInput.value = nowTimeString(true, true);
       fimInput.value = '';
     }
     updateParadaTimerBtn(i);
+    updateParadaDuration(i);
     renderLiveMetrics();
   }
+  const temposIntervals = {};
   function buildTemposRows(){
     const body = el('ndc-tempos-body');
     body.innerHTML = "";
     for (let i = 1; i <= N_TEMPOS; i++){
       const tr = document.createElement('tr');
       tr.innerHTML = `<td>${i}</td>
-        <td><input type="number" class="t-prod" data-i="${i}"></td>
-        <td><input type="number" class="t-man" data-i="${i}"></td>
-        <td><input type="number" class="t-esp" data-i="${i}"></td>`;
+        <td>
+          <input type="number" step="0.001" class="t-prod" data-i="${i}">
+          <button type="button" class="ghost small t-timer-btn" data-i="${i}" data-field="prod">Iniciar</button>
+        </td>
+        <td>
+          <input type="number" step="0.001" class="t-man" data-i="${i}">
+          <button type="button" class="ghost small t-timer-btn" data-i="${i}" data-field="man">Iniciar</button>
+        </td>
+        <td>
+          <input type="number" step="0.001" class="t-esp" data-i="${i}">
+          <button type="button" class="ghost small t-timer-btn" data-i="${i}" data-field="esp">Iniciar</button>
+        </td>`;
       body.appendChild(tr);
+    }
+    body.querySelectorAll('.t-timer-btn').forEach(btn => {
+      btn.addEventListener('click', () => handleTempoTimer(btn.dataset.i, btn.dataset.field));
+    });
+  }
+  function handleTempoTimer(i, field){
+    const input = document.querySelector(`.t-${field}[data-i="${i}"]`);
+    const btn = document.querySelector(`.t-timer-btn[data-i="${i}"][data-field="${field}"]`);
+    const key = `${field}_${i}`;
+    if (!temposIntervals[key]){
+      const startedAt = Date.now();
+      input.value = '0.000';
+      temposIntervals[key] = {
+        startedAt,
+        interval: setInterval(() => {
+          input.value = ((Date.now() - startedAt) / 1000).toFixed(3);
+        }, 47)
+      };
+      btn.textContent = 'Parar';
+    } else {
+      clearInterval(temposIntervals[key].interval);
+      const elapsed = (Date.now() - temposIntervals[key].startedAt) / 1000;
+      input.value = elapsed.toFixed(3);
+      delete temposIntervals[key];
+      btn.textContent = 'Iniciar';
+      renderLiveMetrics();
     }
   }
 
@@ -433,8 +530,8 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `<td>${i}</td>
         <td><input type="text" class="tr-nome" data-i="${i}" placeholder="Ex.: Trator 3"></td>
-        <td><input type="time" step="1" class="tr-ini" data-i="${i}"></td>
-        <td><input type="time" step="1" class="tr-fim" data-i="${i}"></td>
+        <td><input type="text" class="tr-ini" data-i="${i}" placeholder="HH:MM:SS.mmm" pattern="[0-9:.]*"></td>
+        <td><input type="text" class="tr-fim" data-i="${i}" placeholder="HH:MM:SS.mmm" pattern="[0-9:.]*"></td>
         <td class="tr-dur" data-i="${i}">—</td>
         <td><button type="button" class="ghost small tr-timer-btn" data-i="${i}">Iniciar</button></td>`;
       body.appendChild(tr);
@@ -461,26 +558,26 @@
     const fimInput = document.querySelector(`.tr-fim[data-i="${i}"]`);
     const durCell = document.querySelector(`.tr-dur[data-i="${i}"]`);
     if (!iniInput.value){
-      iniInput.value = nowTimeString(true);
+      iniInput.value = nowTimeString(true, true);
       fimInput.value = '';
-      durCell.textContent = '0:00';
+      durCell.textContent = '0:00.000';
       const startedAt = Date.now();
       tratorIntervals[i] = setInterval(() => {
-        durCell.textContent = secToMMSS((Date.now() - startedAt) / 1000);
-      }, 1000);
+        durCell.textContent = secToMMSS((Date.now() - startedAt) / 1000, true);
+      }, 47);
     } else if (!fimInput.value){
-      fimInput.value = nowTimeString(true);
+      fimInput.value = nowTimeString(true, true);
       if (tratorIntervals[i]){ clearInterval(tratorIntervals[i]); delete tratorIntervals[i]; }
       updateTratorDuration(i);
     } else {
       if (tratorIntervals[i]){ clearInterval(tratorIntervals[i]); delete tratorIntervals[i]; }
-      iniInput.value = nowTimeString(true);
+      iniInput.value = nowTimeString(true, true);
       fimInput.value = '';
-      durCell.textContent = '0:00';
+      durCell.textContent = '0:00.000';
       const startedAt = Date.now();
       tratorIntervals[i] = setInterval(() => {
-        durCell.textContent = secToMMSS((Date.now() - startedAt) / 1000);
-      }, 1000);
+        durCell.textContent = secToMMSS((Date.now() - startedAt) / 1000, true);
+      }, 47);
     }
     updateTratorTimerBtn(i);
     renderLiveMetrics();
@@ -492,7 +589,7 @@
     const s1 = timeToSec(ini), s2 = timeToSec(fim);
     const cell = document.querySelector(`.tr-dur[data-i="${i}"]`);
     if (s1 !== null && s2 !== null && s2 >= s1){
-      cell.textContent = secToMMSS(s2 - s1);
+      cell.textContent = secToMMSS(s2 - s1, true);
     } else {
       cell.textContent = "—";
     }
@@ -586,10 +683,42 @@
     el('ndc-tempos-metrics').innerHTML =
       metricCard('% tempo produtivo (média)', m.pctProdutivoMedio !== null ? fmt(m.pctProdutivoMedio * 100) + '%' : '—');
     el('ndc-trator-metrics').innerHTML =
-      metricCard('Tempo médio de descarga', secToMMSS(m.tempoMedioDescarga)) +
-      metricCard('Mais rápida', secToMMSS(m.tempoMinDescarga)) +
-      metricCard('Mais lenta', secToMMSS(m.tempoMaxDescarga)) +
+      metricCard('Tempo médio de descarga', secToMMSS(m.tempoMedioDescarga, true)) +
+      metricCard('Mais rápida', secToMMSS(m.tempoMinDescarga, true)) +
+      metricCard('Mais lenta', secToMMSS(m.tempoMaxDescarga, true)) +
       metricCard('Repetições registradas', m.nDescargas);
+  }
+
+  const DRAFT_KEY = 'ndc_draft_eficiencia';
+  let draftTimer = null;
+  function scheduleDraftSave(){
+    if (currentEditId) return;
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(saveDraft, 800);
+  }
+  function saveDraft(){
+    if (currentEditId) return;
+    const area = collectForm();
+    if (!area.fazenda && !area.talhao && !area.marca && !area.operador) return;
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ data: area, savedAt: Date.now() })); } catch(e){}
+  }
+  function clearDraft(){
+    try { localStorage.removeItem(DRAFT_KEY); } catch(e){}
+  }
+  function checkDraftOnLoad(){
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const draft = JSON.parse(raw);
+      if (!draft || !draft.data) return;
+      const mins = Math.max(1, Math.round((Date.now() - draft.savedAt) / 60000));
+      if (confirm(`Encontramos um rascunho não salvo de ${mins} minuto(s) atrás (${draft.data.fazenda || 'sem fazenda'} — ${draft.data.talhao || ''}). Deseja recuperá-lo?`)){
+        loadFormFromArea(draft.data);
+        currentEditId = null;
+      } else {
+        clearDraft();
+      }
+    } catch(e){}
   }
 
   function clearForm(){
@@ -635,6 +764,7 @@
       document.querySelectorAll('.pa-ini')[i].value = p.inicio || '';
       document.querySelectorAll('.pa-fim')[i].value = p.fim || '';
       updateParadaTimerBtn(i);
+      updateParadaDuration(i);
     });
     buildTemposRows();
     area.tempos.forEach((t, i) => {
@@ -723,13 +853,7 @@
     reader.readAsText(file);
   }
 
-  function renderConsolidado(){
-    const container = el('ndc-consolidado-body');
-    const areas = loadAllAreas();
-    if (!areas.length){
-      container.innerHTML = '<div class="empty">Salve ao menos uma colheita para gerar o relatório consolidado.</div>';
-      return;
-    }
+  function buildReportHTML(areas){
     const rows = areas.map(a => ({ area: a, m: computeMetrics(a) }));
     const byPipeline = {};
     rows.forEach(r => {
@@ -758,23 +882,71 @@
     html += '<h3 style="margin-top:20px">Relatórios individuais</h3>';
     rows.forEach(r => {
       const a = r.area, m = r.m;
-      html += `<div class="report-block">
-        <h3 style="margin-bottom:2px">${a.fazenda} — ${a.talhao || ''}</h3>
+      html += `<div class="report-block print-break">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+          <h3 style="margin-bottom:2px">${a.fazenda} — ${a.talhao || ''}</h3>
+          <button type="button" class="ghost small no-print" data-action="baixar-word" data-id="${a.id}">Baixar relatório (Word)</button>
+        </div>
         <div class="note">${a.cidade || ''} · ${a.pipeline || ''} · ${a.momento || ''} · Coleta: ${a.dataColeta || '—'} · Colhedora: ${machineLabel(a)} · Operador: ${a.operador || '—'}</div>
         <p style="font-size:13px; margin:10px 0 4px"><strong>Eficiência e disponibilidade:</strong> DM ${fmt(m.dm)}%, MTTR ${fmt(m.mttr)} min (${m.nParadasMec} parada${m.nParadasMec === 1 ? '' : 's'} mecânica${m.nParadasMec === 1 ? '' : 's'}), velocidade ${fmt(m.vel)} km/h.</p>
         <p style="font-size:13px; margin:4px 0"><strong>Consumo:</strong> ${fmt(m.consumo, 2)} L/ha.</p>
         <p style="font-size:13px; margin:4px 0"><strong>Capacidade de campo teórica:</strong> ${fmt(m.capacidadeTeorica, 2)} ha/h.</p>
         <p style="font-size:13px; margin:4px 0"><strong>Tempos e movimentos:</strong> ${m.pctProdutivoMedio !== null ? fmt(m.pctProdutivoMedio * 100) + '% de tempo produtivo em média' : 'sem ciclos registrados'}.</p>
-        <p style="font-size:13px; margin:4px 0"><strong>Descarga do trator (bazuca):</strong> ${m.nDescargas ? `tempo médio ${secToMMSS(m.tempoMedioDescarga)} (min. ${secToMMSS(m.tempoMinDescarga)}, máx. ${secToMMSS(m.tempoMaxDescarga)}), em ${m.nDescargas} repetição${m.nDescargas === 1 ? '' : 'ões'}` : 'sem repetições registradas'}.</p>
+        <p style="font-size:13px; margin:4px 0"><strong>Descarga do trator (bazuca):</strong> ${m.nDescargas ? `tempo médio ${secToMMSS(m.tempoMedioDescarga, true)} (min. ${secToMMSS(m.tempoMinDescarga, true)}, máx. ${secToMMSS(m.tempoMaxDescarga, true)}), em ${m.nDescargas} repetição${m.nDescargas === 1 ? '' : 'ões'}` : 'sem repetições registradas'}.</p>
       </div>`;
     });
+    return html;
+  }
 
+  function renderConsolidado(){
+    const container = el('ndc-consolidado-body');
+    const areas = loadAllAreas();
+    if (!areas.length){
+      container.innerHTML = '<div class="empty">Salve ao menos uma colheita para gerar o relatório consolidado.</div>';
+    } else {
+      container.innerHTML = buildReportHTML(areas);
+      wireWordDownloadButtons(container);
+    }
+    renderImprimir();
+  }
+
+  function renderImprimir(){
+    const container = el('ndc-imprimir-body');
+    if (!container) return;
+    const areas = loadAllAreas();
+    if (!areas.length){
+      container.innerHTML = '<div class="empty">Salve ao menos uma colheita para gerar o relatório de impressão.</div>';
+      return;
+    }
+    const agora = new Date();
+    const dataGeracao = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    let html = `<div class="print-header">
+      <h1 style="font-size:20px; margin:0 0 4px;">Relatório de Eficiência da Colheita</h1>
+      <p class="note" style="margin:0 0 18px;">NEMPA TECH · Monsanto do Brasil · Milho · Gerado em ${dataGeracao}</p>
+    </div>`;
+    html += buildReportHTML(areas);
     container.innerHTML = html;
+    wireWordDownloadButtons(container);
+  }
+
+  function populateDatalists(areas){
+    const fields = {
+      'dl-fazenda': 'fazenda', 'dl-cidade': 'cidade', 'dl-talhao': 'talhao', 'dl-cultivar': 'cultivar',
+      'dl-marca': 'marca', 'dl-modelo': 'modelo', 'dl-frota': 'frota', 'dl-operador': 'operador', 'dl-equipe': 'equipe'
+    };
+    Object.keys(fields).forEach(dlId => {
+      const dl = document.getElementById(dlId);
+      if (!dl) return;
+      const key = fields[dlId];
+      const values = Array.from(new Set(areas.map(a => a[key]).filter(Boolean)));
+      dl.innerHTML = values.map(v => `<option value="${v.replace(/"/g, '&quot;')}">`).join('');
+    });
   }
 
   function refreshAreasList(){
     const areas = loadAllAreas();
     el('ndc-count').textContent = areas.length;
+    populateDatalists(areas);
     const container = el('ndc-areas-list');
     if (!areas.length){
       container.innerHTML = '<div class="empty">Nenhuma área salva ainda.</div>';
@@ -798,15 +970,95 @@
         });
       });
       container.querySelectorAll('[data-action="delete"]').forEach(btn => {
-        btn.addEventListener('click', () => deleteArea(btn.dataset.id));
+        btn.addEventListener('click', () => {
+          const areas = loadAllAreas();
+          const a = areas.find(x => x.id === btn.dataset.id);
+          const nome = a ? `${a.fazenda || '(sem nome)'} — ${a.talhao || ''}` : 'esta colheita';
+          if (confirm(`Excluir "${nome}"? Essa ação não pode ser desfeita.`)){
+            deleteArea(btn.dataset.id);
+          }
+        });
       });
     }
     renderConsolidado();
   }
 
   document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+  function simularDadosTeste(){
+    clearForm();
+    el('f-fazenda').value = 'Fazenda Santa Rita';
+    el('f-cidade').value = 'Itaporã/MS';
+    el('f-pipeline').value = 'Subtropical';
+    el('f-talhao').value = 'Talhão 4';
+    el('f-area-ha').value = 42;
+    el('f-cultivar').value = 'DKB 390';
+    el('f-data-plantio').value = '2026-02-28';
+    el('f-data-coleta').value = '2026-08-05';
+    el('f-momento').value = 'Linha de base';
+    el('f-marca').value = 'John Deere';
+    el('f-modelo').value = 'S540';
+    el('f-frota').value = '12';
+    el('f-operador').value = 'João da Silva';
+    el('f-equipe').value = 'Equipe de campo 1';
+    el('f-horas-totais').value = 10;
+    el('f-horas-disp').value = 8.5;
+    el('f-dist').value = 50;
+    el('f-tempo-dist').value = 12;
+    el('f-comb-ini').value = 380;
+    el('f-comb-fim').value = 320;
+    el('f-area-colhida').value = 42;
+    el('f-plataforma').value = 9.1;
+
+    const paradasTeste = [
+      { causa: 'Mecânica', inicio: '08:10:00', fim: '08:25:00' },
+      { causa: 'Abastecimento', inicio: '10:00:00', fim: '10:15:00' },
+      { causa: 'Descarregamento', inicio: '11:30:00', fim: '11:38:00' },
+      { causa: 'Aguardando transbordo', inicio: '13:00:00', fim: '13:20:00' },
+      { causa: 'Climática', inicio: '15:00:00', fim: '15:40:00' },
+    ];
+    paradasTeste.forEach((p, i) => {
+      document.querySelectorAll('.pa-causa')[i].value = p.causa;
+      document.querySelectorAll('.pa-ini')[i].value = p.inicio;
+      document.querySelectorAll('.pa-fim')[i].value = p.fim;
+      updateParadaTimerBtn(i);
+      updateParadaDuration(i);
+    });
+
+    const temposTeste = [
+      { produtivo: 240, manobra: 30, espera: 10 },
+      { produtivo: 235, manobra: 28, espera: 15 },
+      { produtivo: 250, manobra: 25, espera: 5 },
+      { produtivo: 228, manobra: 35, espera: 20 },
+      { produtivo: 245, manobra: 30, espera: 12 },
+    ];
+    temposTeste.forEach((t, i) => {
+      document.querySelectorAll('.t-prod')[i].value = t.produtivo;
+      document.querySelectorAll('.t-man')[i].value = t.manobra;
+      document.querySelectorAll('.t-esp')[i].value = t.espera;
+    });
+
+    const tratorTeste = [
+      { trator: 'Trator 3', inicio: '09:12:00', fim: '09:13:45' },
+      { trator: 'Trator 3', inicio: '10:40:10', fim: '10:42:02' },
+      { trator: 'Trator 3', inicio: '12:05:20', fim: '12:06:58' },
+      { trator: 'Trator 3', inicio: '13:50:00', fim: '13:51:50' },
+      { trator: 'Trator 3', inicio: '15:30:15', fim: '15:31:56' },
+    ];
+    tratorTeste.forEach((t, i) => {
+      document.querySelectorAll('.tr-nome')[i].value = t.trator;
+      document.querySelectorAll('.tr-ini')[i].value = t.inicio;
+      document.querySelectorAll('.tr-fim')[i].value = t.fim;
+      updateTratorDuration(i + 1);
+      updateTratorTimerBtn(i + 1);
+    });
+
+    renderLiveMetrics();
+    el('ndc-save-status').textContent = 'Dados de teste preenchidos — revise e clique em "Salvar colheita".';
+  }
+
   el('ndc-save').addEventListener('click', saveArea);
   el('ndc-clear').addEventListener('click', clearForm);
+  el('ndc-simular').addEventListener('click', simularDadosTeste);
   el('ndc-export-all').addEventListener('click', exportAll);
   el('ndc-import-btn').addEventListener('click', () => el('ndc-import-file').click());
   el('ndc-import-file').addEventListener('change', (e) => {
@@ -814,6 +1066,7 @@
     e.target.value = '';
   });
   el('ndc-print').addEventListener('click', () => window.print());
+  el('ndc-print-agora').addEventListener('click', () => window.print());
   document.getElementById('ndc-app').addEventListener('input', renderLiveMetrics);
 
   /* ============== AUTENTICAÇÃO E SINCRONIZAÇÃO COM A NUVEM ============== */
@@ -876,6 +1129,19 @@
       el('login-status').textContent = e && e.message ? e.message : 'Não foi possível entrar com Google.';
     }
   });
+  el('login-forgot-link').addEventListener('click', async (ev) => {
+    ev.preventDefault();
+    const email = el('login-email').value.trim();
+    if (!email){ el('login-status').textContent = 'Digite seu e-mail no campo acima e clique em "Esqueci minha senha" de novo.'; return; }
+    el('login-status').textContent = 'Enviando e-mail de redefinição...';
+    try {
+      await window.__fbReady;
+      await window.__fb.doPasswordReset(email);
+      el('login-status').textContent = 'Enviamos um e-mail para redefinir sua senha. Confira sua caixa de entrada.';
+    } catch(e){
+      el('login-status').textContent = 'Não foi possível enviar o e-mail. Confira se o endereço está correto.';
+    }
+  });
   el('logout-btn').addEventListener('click', async () => {
     try { await window.__fbReady; await window.__fb.doLogout(); } catch(e){}
   });
@@ -898,6 +1164,390 @@
   window.__fbReady.then(() => { el('login-gate').style.display = window.__fbUser ? 'none' : 'block'; });
   // Enquanto o Firebase ainda carrega, mostra a tela de login (evita piscar o app sem dados)
   showLogin();
+
+  /* ============== GERAÇÃO DE RELATÓRIO WORD (.docx) COM GRÁFICOS ============== */
+  const RPT_BLUE = "0038DC", RPT_CYAN = "00B4FC", RPT_DARK = "0B0B0B", RPT_GRAY = "52514E";
+  const RPT_FONT = "Arial";
+
+  function dataURLToUint8Array(dataURL){
+    const base64 = dataURL.split(',')[1];
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return bytes;
+  }
+  function canvasToUint8(canvas){ return dataURLToUint8Array(canvas.toDataURL('image/png')); }
+  function getLogoUint8(){
+    const img = document.querySelector('.app-header img');
+    return img ? dataURLToUint8Array(img.src) : null;
+  }
+
+  function drawGaugeDonut(value, label){
+    const c = document.createElement('canvas');
+    c.width = 440; c.height = 380;
+    const ctx = c.getContext('2d');
+    const cx = 220, cy = 160, rMid = 118, lw = 62;
+    ctx.lineWidth = lw; ctx.lineCap = 'butt';
+    ctx.beginPath(); ctx.arc(cx, cy, rMid, 0, Math.PI * 2); ctx.strokeStyle = '#D9D9D6'; ctx.stroke();
+    const start = -Math.PI / 2;
+    const end = start + (Math.max(0, Math.min(100, value)) / 100) * Math.PI * 2;
+    ctx.beginPath(); ctx.arc(cx, cy, rMid, start, end, false); ctx.strokeStyle = '#' + RPT_BLUE; ctx.stroke();
+    ctx.fillStyle = '#' + RPT_BLUE; ctx.font = 'bold 68px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(`${Math.round(value)}%`, cx, cy);
+    ctx.fillStyle = '#' + RPT_GRAY; ctx.font = '24px Arial';
+    ctx.fillText(label, cx, cy + rMid + 55);
+    return c;
+  }
+
+  function drawDonutLegend(dataPairs, colors, centerLabel, title){
+    const c = document.createElement('canvas');
+    c.width = 760; c.height = 400;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#' + RPT_DARK; ctx.font = 'bold 26px Arial'; ctx.textAlign = 'center';
+    ctx.fillText(title, 380, 36);
+    const cx = 195, cy = 220, rOuter = 130, rInner = 78;
+    const total = dataPairs.reduce((s, pair) => s + pair[1], 0) || 1;
+    let start = -Math.PI / 2;
+    dataPairs.forEach((pair, i) => {
+      const angle = (pair[1] / total) * Math.PI * 2;
+      ctx.beginPath(); ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, rOuter, start, start + angle, false);
+      ctx.closePath(); ctx.fillStyle = colors[i % colors.length]; ctx.fill();
+      start += angle;
+    });
+    ctx.beginPath(); ctx.arc(cx, cy, rInner, 0, Math.PI * 2); ctx.fillStyle = '#FFFFFF'; ctx.fill();
+    if (centerLabel){
+      ctx.fillStyle = '#' + RPT_DARK; ctx.font = 'bold 24px Arial'; ctx.textAlign = 'center';
+      centerLabel.split('\n').forEach((line, i) => ctx.fillText(line, cx, cy - 8 + i * 28));
+    }
+    let ly = 110;
+    ctx.textAlign = 'left'; ctx.font = '15px Arial';
+    dataPairs.forEach((pair, i) => {
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.fillRect(400, ly - 13, 16, 16);
+      ctx.fillStyle = '#' + RPT_DARK;
+      ctx.fillText(`${pair[0]} (${pair[1]})`, 424, ly);
+      ly += 30;
+    });
+    return c;
+  }
+
+  function drawBarChart(labels, values, color, opts){
+    opts = opts || {};
+    const c = document.createElement('canvas');
+    c.width = 900; c.height = 440;
+    const ctx = c.getContext('2d');
+    const padding = { left: 70, right: 140, top: 60, bottom: 60 };
+    const w = c.width - padding.left - padding.right;
+    const h = c.height - padding.top - padding.bottom;
+    const maxV = Math.max(...values, 0.01) * 1.3;
+    ctx.fillStyle = '#' + RPT_DARK; ctx.font = 'bold 22px Arial'; ctx.textAlign = 'center';
+    ctx.fillText(opts.title || '', c.width / 2, 32);
+    ctx.strokeStyle = '#D9D9D6'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padding.left, padding.top); ctx.lineTo(padding.left, padding.top + h); ctx.lineTo(padding.left + w, padding.top + h); ctx.stroke();
+    const gap = w / Math.max(labels.length, 1);
+    const barW = gap * 0.55;
+    labels.forEach((label, i) => {
+      const v = values[i] || 0;
+      const barH = (v / maxV) * h;
+      const x = padding.left + gap * i + (gap - barW) / 2;
+      const y = padding.top + h - barH;
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, barW, barH);
+      ctx.fillStyle = '#' + RPT_DARK; ctx.font = '14px Arial'; ctx.textAlign = 'center';
+      ctx.fillText(opts.valueFormatter ? opts.valueFormatter(v) : String(v), x + barW / 2, y - 8);
+      ctx.fillStyle = '#' + RPT_GRAY;
+      ctx.fillText(label, x + barW / 2, padding.top + h + 20);
+    });
+    if (opts.average !== undefined && opts.average !== null && !isNaN(opts.average)){
+      const ay = padding.top + h - (opts.average / maxV) * h;
+      ctx.strokeStyle = '#' + RPT_CYAN; ctx.setLineDash([6, 4]); ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(padding.left, ay); ctx.lineTo(padding.left + w, ay); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#' + RPT_DARK; ctx.font = '14px Arial'; ctx.textAlign = 'left';
+      ctx.fillText(opts.averageLabel || '', padding.left + w + 10, ay + 5);
+    }
+    if (opts.yLabel){
+      ctx.save();
+      ctx.translate(18, padding.top + h / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillStyle = '#' + RPT_GRAY; ctx.font = '14px Arial'; ctx.textAlign = 'center';
+      ctx.fillText(opts.yLabel, 0, 0);
+      ctx.restore();
+    }
+    return c;
+  }
+
+  function rptH1(text){
+    return new docx.Paragraph({
+      children: [new docx.TextRun({ text, bold: true, size: 30, color: RPT_BLUE, font: RPT_FONT })],
+      spacing: { before: 320, after: 160 },
+      border: { bottom: { color: RPT_BLUE, space: 4, style: docx.BorderStyle.SINGLE, size: 4 } },
+    });
+  }
+  function rptH2(text){
+    return new docx.Paragraph({
+      children: [new docx.TextRun({ text, bold: true, size: 25, color: RPT_DARK, font: RPT_FONT })],
+      spacing: { before: 200, after: 100 },
+    });
+  }
+  function rptSpacer(h){ return new docx.Paragraph({ text: "", spacing: { after: h || 160 } }); }
+  function rptInfoTable(pairs){
+    const w1 = 2400, w2 = 6600;
+    return new docx.Table({
+      width: { size: w1 + w2, type: docx.WidthType.DXA },
+      columnWidths: [w1, w2],
+      rows: pairs.map(pair => new docx.TableRow({
+        children: [
+          new docx.TableCell({
+            width: { size: w1, type: docx.WidthType.DXA },
+            shading: { type: docx.ShadingType.CLEAR, fill: "F6F8FB" },
+            margins: { top: 70, bottom: 70, left: 110, right: 110 },
+            children: [new docx.Paragraph({ children: [new docx.TextRun({ text: pair[0], bold: true, size: 19, color: RPT_GRAY, font: RPT_FONT })] })],
+          }),
+          new docx.TableCell({
+            width: { size: w2, type: docx.WidthType.DXA },
+            margins: { top: 70, bottom: 70, left: 110, right: 110 },
+            children: [new docx.Paragraph({ children: [new docx.TextRun({ text: String(pair[1]), size: 21, color: RPT_DARK, font: RPT_FONT })] })],
+          }),
+        ],
+      })),
+    });
+  }
+  function rptMetricCard(label, value, width, color){
+    return new docx.TableCell({
+      width: { size: width, type: docx.WidthType.DXA },
+      shading: { type: docx.ShadingType.CLEAR, fill: "F6F8FB" },
+      margins: { top: 140, bottom: 140, left: 140, right: 140 },
+      children: [
+        new docx.Paragraph({ children: [new docx.TextRun({ text: label, size: 19, color: RPT_GRAY, font: RPT_FONT })], spacing: { after: 40 } }),
+        new docx.Paragraph({ children: [new docx.TextRun({ text: value, size: 34, bold: true, color: color || RPT_BLUE, font: RPT_FONT })] }),
+      ],
+    });
+  }
+  function rptMetricsRow(items){
+    const w = Math.floor(9000 / items.length);
+    return new docx.Table({
+      width: { size: 9000, type: docx.WidthType.DXA },
+      columnWidths: items.map(() => w),
+      rows: [new docx.TableRow({ children: items.map(it => rptMetricCard(it[0], it[1], w, it[2])) })],
+    });
+  }
+  function rptTableHeaderCell(text, width){
+    return new docx.TableCell({
+      width: { size: width, type: docx.WidthType.DXA },
+      shading: { type: docx.ShadingType.CLEAR, fill: RPT_BLUE },
+      margins: { top: 80, bottom: 80, left: 100, right: 100 },
+      children: [new docx.Paragraph({ children: [new docx.TextRun({ text, bold: true, size: 19, color: "FFFFFF", font: RPT_FONT })] })],
+    });
+  }
+  function rptTableCell(text, width, fill){
+    return new docx.TableCell({
+      width: { size: width, type: docx.WidthType.DXA },
+      shading: fill ? { type: docx.ShadingType.CLEAR, fill } : undefined,
+      margins: { top: 70, bottom: 70, left: 100, right: 100 },
+      verticalAlign: docx.VerticalAlign.CENTER,
+      children: [new docx.Paragraph({ children: [new docx.TextRun({ text, size: 20, color: RPT_DARK, font: RPT_FONT })] })],
+    });
+  }
+  function rptDataTable(headers, rows, widths){
+    return new docx.Table({
+      width: { size: widths.reduce((a, b) => a + b, 0), type: docx.WidthType.DXA },
+      columnWidths: widths,
+      rows: [
+        new docx.TableRow({ tableHeader: true, children: headers.map((h, i) => rptTableHeaderCell(h, widths[i])) }),
+        ...rows.map((r, ri) => new docx.TableRow({ children: r.map((val, i) => rptTableCell(val, widths[i], ri % 2 === 1 ? "F6F8FB" : undefined)) })),
+      ],
+    });
+  }
+  function rptImagePairRow(buf1, buf2, w1, h1, w2, h2){
+    return new docx.Table({
+      width: { size: 9000, type: docx.WidthType.DXA },
+      columnWidths: [4500, 4500],
+      borders: {
+        top: { style: docx.BorderStyle.NONE }, bottom: { style: docx.BorderStyle.NONE },
+        left: { style: docx.BorderStyle.NONE }, right: { style: docx.BorderStyle.NONE },
+        insideHorizontal: { style: docx.BorderStyle.NONE }, insideVertical: { style: docx.BorderStyle.NONE },
+      },
+      rows: [new docx.TableRow({ children: [
+        new docx.TableCell({
+          width: { size: 4500, type: docx.WidthType.DXA },
+          margins: { top: 60, bottom: 60, left: 60, right: 60 },
+          children: [new docx.Paragraph({ children: [new docx.ImageRun({ data: buf1, transformation: { width: w1, height: h1 }, type: "png" })], alignment: docx.AlignmentType.CENTER })],
+        }),
+        new docx.TableCell({
+          width: { size: 4500, type: docx.WidthType.DXA },
+          margins: { top: 60, bottom: 60, left: 60, right: 60 },
+          children: buf2 ? [new docx.Paragraph({ children: [new docx.ImageRun({ data: buf2, transformation: { width: w2, height: h2 }, type: "png" })], alignment: docx.AlignmentType.CENTER })] : [new docx.Paragraph({ text: "" })],
+        }),
+      ] })],
+    });
+  }
+  function rptSingleImageCentered(buf, w, h){
+    return new docx.Paragraph({
+      children: [new docx.ImageRun({ data: buf, transformation: { width: w, height: h }, type: "png" })],
+      alignment: docx.AlignmentType.CENTER,
+    });
+  }
+
+  async function gerarRelatorioWordEficiencia(area){
+    const m = computeMetrics(area);
+    const logoBytes = getLogoUint8();
+
+    const gaugeCanvas = drawGaugeDonut(m.dm || 0, "Disponibilidade Mecânica");
+
+    const causasMap = {};
+    (area.paradas || []).forEach(p => {
+      const s1 = timeToSec(p.inicio), s2 = timeToSec(p.fim);
+      if (s1 === null || s2 === null || !p.causa) return;
+      const durMin = (s2 - s1) / 60;
+      causasMap[p.causa] = (causasMap[p.causa] || 0) + durMin;
+    });
+    const causasPairs = Object.entries(causasMap).sort((a, b) => b[1] - a[1]).map(pair => [pair[0], Math.round(pair[1])]);
+    const causasColors = ['#00B4FC', '#0038DC', '#A32E23', '#8A5A00', '#7A8AA0', '#52514E', '#1E7A34'];
+    const totalParadaMin = causasPairs.reduce((s, pair) => s + pair[1], 0);
+    const paradasDonutCanvas = causasPairs.length
+      ? drawDonutLegend(causasPairs, causasColors, `${totalParadaMin}\nmin`, "Paradas por causa")
+      : null;
+
+    const ciclosLabels = area.tempos.map((t, i) => `Ciclo ${i + 1}`);
+    const ciclosPct = area.tempos.map(t => {
+      const total = (t.produtivo || 0) + (t.manobra || 0) + (t.espera || 0);
+      return total > 0 ? (t.produtivo / total * 100) : 0;
+    });
+    const mediaPct = ciclosPct.length ? ciclosPct.reduce((a, b) => a + b, 0) / ciclosPct.length : 0;
+    const ciclosBarCanvas = drawBarChart(ciclosLabels, ciclosPct, '#' + RPT_BLUE, {
+      title: 'Tempo produtivo por ciclo', yLabel: '% tempo produtivo',
+      valueFormatter: v => v.toFixed(1) + '%', average: mediaPct, averageLabel: `média ${mediaPct.toFixed(1)}%`
+    });
+
+    const descargaLabels = (area.tratorDescarga || []).map((t, i) => `Rep. ${i + 1}`);
+    const descargaSecs = (area.tratorDescarga || []).map(t => {
+      const s1 = timeToSec(t.inicio), s2 = timeToSec(t.fim);
+      return (s1 !== null && s2 !== null && s2 >= s1) ? (s2 - s1) : 0;
+    });
+    const mediaDescarga = descargaSecs.length ? descargaSecs.reduce((a, b) => a + b, 0) / descargaSecs.length : 0;
+    const descargaBarCanvas = drawBarChart(descargaLabels, descargaSecs, '#' + RPT_CYAN, {
+      title: 'Tempo de descarga do trator (bazuca)', yLabel: 'Duração (segundos)',
+      valueFormatter: v => secToMMSS(v, true), average: mediaDescarga, averageLabel: `média ${secToMMSS(mediaDescarga, true)}`
+    });
+
+    const children = [];
+    if (logoBytes){
+      children.push(new docx.Paragraph({ children: [new docx.ImageRun({ data: logoBytes, transformation: { width: 200, height: 85 }, type: "png" })], alignment: docx.AlignmentType.CENTER, spacing: { after: 120 } }));
+    }
+    children.push(new docx.Paragraph({ children: [new docx.TextRun({ text: "RELATÓRIO DE EFICIÊNCIA DA COLHEITA", bold: true, size: 30, color: RPT_BLUE, font: RPT_FONT })], alignment: docx.AlignmentType.CENTER, spacing: { after: 40 } }));
+    children.push(new docx.Paragraph({ children: [new docx.TextRun({ text: `${area.fazenda || '—'} · ${area.talhao || ''} · Coleta em ${area.dataColeta || '—'} · ${area.momento || ''}`, size: 20, color: RPT_GRAY, font: RPT_FONT })], alignment: docx.AlignmentType.CENTER, spacing: { after: 260 } }));
+
+    children.push(rptH1("1. Identificação"));
+    children.push(rptInfoTable([
+      ["Fazenda", area.fazenda || "—"], ["Cidade / UF", area.cidade || "—"], ["Pipeline", area.pipeline || "—"],
+      ["Talhão", `${area.talhao || "—"}${area.areaHa ? "  ·  Área: " + area.areaHa + " ha" : ""}`],
+      ["Cultivar", area.cultivar || "—"], ["Data de plantio", area.dataPlantio || "—"], ["Data da coleta", area.dataColeta || "—"],
+      ["Momento", area.momento || "—"], ["Colhedora", machineLabel(area)], ["Operador", area.operador || "—"], ["Equipe responsável", area.equipe || "—"],
+    ]));
+    children.push(rptSpacer());
+
+    children.push(rptH1("2. Painel visual"));
+    if (paradasDonutCanvas){
+      children.push(rptImagePairRow(canvasToUint8(gaugeCanvas), canvasToUint8(paradasDonutCanvas), 205, 177, 330, 174));
+    } else {
+      children.push(rptSingleImageCentered(canvasToUint8(gaugeCanvas), 240, 207));
+    }
+    children.push(rptSpacer(300));
+    children.push(new docx.Paragraph({ children: [new docx.PageBreak()] }));
+
+    children.push(rptH1("3. Eficiência operacional, disponibilidade e consumo"));
+    children.push(rptMetricsRow([
+      ["Disponibilidade Mecânica", fmt(m.dm) + "%"], ["MTTR", fmt(m.mttr) + " min"], ["Velocidade média", fmt(m.vel) + " km/h"],
+    ]));
+    children.push(rptSpacer(120));
+    children.push(rptMetricsRow([
+      ["Consumo", fmt(m.consumo, 2) + " L/ha"], ["Capacidade teórica", fmt(m.capacidadeTeorica, 2) + " ha/h"], ["Plataforma", (area.plataforma || "—") + " m"],
+    ]));
+    children.push(rptSpacer());
+    children.push(rptH2("Registro de paradas"));
+    const paradasRows = (area.paradas || []).map(p => {
+      const s1 = timeToSec(p.inicio), s2 = timeToSec(p.fim);
+      const durMin = (s1 !== null && s2 !== null && s2 >= s1) ? Math.round((s2 - s1) / 60) : null;
+      return [p.causa || "—", p.inicio || "—", p.fim || "—", durMin !== null ? durMin + " min" : "—"];
+    });
+    children.push(rptDataTable(["Causa", "Início", "Fim", "Duração"], paradasRows.length ? paradasRows : [["—", "—", "—", "—"]], [3000, 2000, 2000, 2000]));
+    children.push(rptSpacer());
+
+    children.push(rptH1("4. Estudo de tempos e movimentos"));
+    const temposRows = area.tempos.map((t, i) => {
+      const total = (t.produtivo || 0) + (t.manobra || 0) + (t.espera || 0);
+      const pct = total > 0 ? (t.produtivo / total * 100) : null;
+      return [String(i + 1), String(t.produtivo ?? "—"), String(t.manobra ?? "—"), String(t.espera ?? "—"), pct !== null ? pct.toFixed(1) + "%" : "—"];
+    });
+    children.push(rptDataTable(["Ciclo", "Produtivo (s)", "Manobra (s)", "Espera (s)", "% Produtivo"], temposRows, [1400, 2100, 2100, 2100, 1500]));
+    children.push(rptSpacer(120));
+    children.push(rptMetricsRow([["% Tempo produtivo (média)", m.pctProdutivoMedio !== null ? fmt(m.pctProdutivoMedio * 100) + "%" : "—"]]));
+    children.push(rptSpacer(120));
+    children.push(rptSingleImageCentered(canvasToUint8(ciclosBarCanvas), 460, 225));
+    children.push(rptSpacer());
+
+    children.push(rptH1("5. Eficiência do trator — descarga com bazuca"));
+    const tratorRows = (area.tratorDescarga || []).map((t, i) => {
+      const s1 = timeToSec(t.inicio), s2 = timeToSec(t.fim);
+      const dur = (s1 !== null && s2 !== null && s2 >= s1) ? secToMMSS(s2 - s1, true) : "—";
+      return [String(i + 1), t.trator || "—", t.inicio || "—", t.fim || "—", dur];
+    });
+    children.push(rptDataTable(["Repetição", "Trator", "Início", "Fim", "Duração"], tratorRows.length ? tratorRows : [["—", "—", "—", "—", "—"]], [1400, 1900, 1900, 1900, 1900]));
+    children.push(rptSpacer(120));
+    children.push(rptMetricsRow([
+      ["Tempo médio de descarga", secToMMSS(m.tempoMedioDescarga, true)], ["Mais rápida", secToMMSS(m.tempoMinDescarga, true)], ["Mais lenta", secToMMSS(m.tempoMaxDescarga, true)],
+    ]));
+    children.push(rptSpacer(120));
+    children.push(rptSingleImageCentered(canvasToUint8(descargaBarCanvas), 460, 225));
+    children.push(rptSpacer());
+
+    children.push(rptH1("6. Observações"));
+    children.push(new docx.Paragraph({ children: [new docx.TextRun({ text: "Relatório gerado pelo sistema Nempa Tech a partir dos dados registrados em campo.", font: RPT_FONT, size: 22, color: RPT_DARK })], spacing: { after: 100 } }));
+
+    const doc = new docx.Document({
+      styles: { default: { document: { run: { font: RPT_FONT, size: 21 } } } },
+      sections: [{
+        properties: { page: { size: { width: 12240, height: 15840 }, margin: { top: 900, bottom: 900, left: 1000, right: 1000 } } },
+        footers: {
+          default: new docx.Footer({
+            children: [new docx.Paragraph({
+              alignment: docx.AlignmentType.CENTER,
+              children: [new docx.TextRun({ text: `NEMPATECH — Relatório de ensaio · ${new Date().toLocaleDateString('pt-BR')}`, size: 16, color: RPT_GRAY, font: RPT_FONT })],
+            })],
+          }),
+        },
+        children,
+      }],
+    });
+
+    const blob = await docx.Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const safeName = (area.fazenda || 'colheita').replace(/[^a-z0-9]+/gi, '_');
+    a.href = url; a.download = `Relatorio_Eficiencia_${safeName}.docx`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function wireWordDownloadButtons(container){
+    container.querySelectorAll('[data-action="baixar-word"]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const areas = loadAllAreas();
+        const area = areas.find(x => x.id === btn.dataset.id);
+        if (!area) return;
+        const original = btn.textContent;
+        btn.textContent = 'Gerando...'; btn.disabled = true;
+        try {
+          await gerarRelatorioWordEficiencia(area);
+        } catch(e){
+          alert('Não foi possível gerar o Word: ' + e.message);
+        }
+        btn.textContent = original; btn.disabled = false;
+      });
+    });
+  }
 
   buildParadasRows(); buildTemposRows(); buildTratorRows();
   renderLiveMetrics();

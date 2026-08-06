@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nempatech-cache-v2';
+const CACHE_NAME = 'nempatech-cache-v4';
 const FILES_TO_CACHE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (event) => {
@@ -16,8 +16,14 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = event.request.url;
 
-  // Scripts do SDK do Firebase: cache-first, para funcionar offline após o primeiro carregamento online.
-  if (url.includes('gstatic.com/firebasejs')) {
+  // Scripts do SDK do Firebase e a fonte Montserrat (Google Fonts): cache-first,
+  // para funcionar offline após o primeiro carregamento online.
+  if (
+    url.includes('gstatic.com/firebasejs') ||
+    url.includes('unpkg.com/docx') ||
+    url.includes('fonts.googleapis.com') ||
+    url.includes('fonts.gstatic.com')
+  ) {
     event.respondWith(
       caches.open(CACHE_NAME).then((cache) =>
         cache.match(event.request).then((cached) => {
@@ -32,8 +38,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Chamadas ao Firestore/Auth (firestore.googleapis.com, identitytoolkit) seguem direto para a rede;
-  // o próprio SDK do Firebase já cuida do cache/fila offline dessas chamadas.
+  // Chamadas ao Firestore/Auth/Storage (firestore.googleapis.com, identitytoolkit, etc.) seguem
+  // direto para a rede; o próprio SDK do Firebase já cuida do cache/fila offline dessas chamadas.
   if (url.includes('googleapis.com') || url.includes('googleapis.googleusercontent.com')) {
     return;
   }
