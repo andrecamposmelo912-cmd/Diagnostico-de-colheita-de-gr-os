@@ -1,0 +1,16 @@
+{
+  "name": "Eficiência da Colheita — Nempa Tech",
+  "short_name": "Eficiência",
+  "description": "Sistema Nempa Tech de coleta e relatório de eficiência, disponibilidade e consumo na colheita de milho",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#0038DC",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
